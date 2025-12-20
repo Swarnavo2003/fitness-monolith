@@ -9,6 +9,8 @@ import in.swarnavo.fitness.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ActivityServiceImpl implements ActivityService {
@@ -32,6 +34,14 @@ public class ActivityServiceImpl implements ActivityService {
 
         Activity savedActivity = activityRepository.save(activity);
         return mapToResponse(savedActivity);
+    }
+
+    @Override
+    public List<ActivityResponse> getUserActivities(String userId) {
+        List<Activity> activityList = activityRepository.findByUserId(userId);
+        return activityList.stream()
+                .map(activity -> mapToResponse(activity))
+                .toList();
     }
 
     private ActivityResponse mapToResponse(Activity activity) {
