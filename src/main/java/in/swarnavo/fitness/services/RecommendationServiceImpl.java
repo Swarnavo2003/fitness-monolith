@@ -83,7 +83,7 @@ public class RecommendationServiceImpl implements RecommendationService {
     @Override
     public List<RecommendationResponse> getUserRecommendations(String userId) {
         List<Recommendation> recommendations = recommendationRepository.findByUserId(userId);
-        List<RecommendationResponse> recommendationList = recommendations
+        return recommendations
                 .stream()
                 .map(recommendation -> RecommendationResponse.builder()
                         .id(recommendation.getId())
@@ -96,6 +96,23 @@ public class RecommendationServiceImpl implements RecommendationService {
                         .updatedAt(recommendation.getUpdatedAt())
                         .build()
                 ).toList();
-        return recommendationList;
+    }
+
+    @Override
+    public List<RecommendationResponse> getActivityRecommendations(String activityId) {
+        List<Recommendation> recommendations = recommendationRepository.findByActivityId(activityId);
+        return recommendations
+                .stream()
+                .map(recommendation -> RecommendationResponse.builder()
+                        .id(recommendation.getId())
+                        .type(recommendation.getType())
+                        .recommendations(recommendation.getRecommendations())
+                        .improvements(recommendation.getImprovements())
+                        .suggestions(recommendation.getSuggestions())
+                        .safety(recommendation.getSafety())
+                        .createdAt(recommendation.getCreatedAt())
+                        .updatedAt(recommendation.getUpdatedAt())
+                        .build()
+                ).toList();
     }
 }

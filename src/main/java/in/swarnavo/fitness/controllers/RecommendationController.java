@@ -25,8 +25,18 @@ public class RecommendationController {
         return ResponseEntity.ok(recommendation);
     }
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<RecommendationResponse>> getUserRecommendations(@PathVariable String userId) {
+    public ResponseEntity<List<RecommendationResponse>> getUserRecommendations(
+            @PathVariable String userId
+    ) {
         List<RecommendationResponse> recommendationList = recommendationService.getUserRecommendations(userId);
+        return ResponseEntity.ok(recommendationList);
+    }
+
+    @GetMapping("/activity/{activityId}")
+    public ResponseEntity<List<RecommendationResponse>> getActivityRecommendation(
+            @PathVariable String activityId
+    ) {
+        List<RecommendationResponse> recommendationList = recommendationService.getActivityRecommendations(activityId);
         return ResponseEntity.ok(recommendationList);
     }
 }

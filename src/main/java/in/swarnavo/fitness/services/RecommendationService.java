@@ -9,4 +9,6 @@ public interface RecommendationService {
     RecommendationResponse generateRecommendation(RecommendationRequest request);
 
     List<RecommendationResponse> getUserRecommendations(String userId);
+
+    List<RecommendationResponse> getActivityRecommendations(String activityId);
 }
