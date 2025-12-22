@@ -13,6 +13,8 @@ import in.swarnavo.fitness.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class RecommendationServiceImpl implements RecommendationService {
@@ -76,5 +78,24 @@ public class RecommendationServiceImpl implements RecommendationService {
                 .createdAt(recommendation.getCreatedAt())
                 .updatedAt(recommendation.getUpdatedAt())
                 .build();
+    }
+
+    @Override
+    public List<RecommendationResponse> getUserRecommendations(String userId) {
+        List<Recommendation> recommendations = recommendationRepository.findByUserId(userId);
+        List<RecommendationResponse> recommendationList = recommendations
+                .stream()
+                .map(recommendation -> RecommendationResponse.builder()
+                        .id(recommendation.getId())
+                        .type(recommendation.getType())
+                        .recommendations(recommendation.getRecommendations())
+                        .improvements(recommendation.getImprovements())
+                        .suggestions(recommendation.getSuggestions())
+                        .safety(recommendation.getSafety())
+                        .createdAt(recommendation.getCreatedAt())
+                        .updatedAt(recommendation.getUpdatedAt())
+                        .build()
+                ).toList();
+        return recommendationList;
     }
 }

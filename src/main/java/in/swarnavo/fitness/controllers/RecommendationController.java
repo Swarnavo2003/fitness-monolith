@@ -4,11 +4,11 @@ import in.swarnavo.fitness.dtos.RecommendationRequest;
 import in.swarnavo.fitness.dtos.RecommendationResponse;
 import in.swarnavo.fitness.services.RecommendationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/recommendations")
@@ -23,5 +23,10 @@ public class RecommendationController {
     ) {
         RecommendationResponse recommendation = recommendationService.generateRecommendation(request);
         return ResponseEntity.ok(recommendation);
+    }
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<RecommendationResponse>> getUserRecommendations(@PathVariable String userId) {
+        List<RecommendationResponse> recommendationList = recommendationService.getUserRecommendations(userId);
+        return ResponseEntity.ok(recommendationList);
     }
 }
