@@ -1,5 +1,7 @@
 package in.swarnavo.fitness.controllers;
 
+import in.swarnavo.fitness.dtos.LoginRequest;
+import in.swarnavo.fitness.dtos.LoginResponse;
 import in.swarnavo.fitness.dtos.RegisterRequest;
 import in.swarnavo.fitness.dtos.UserResponse;
 import in.swarnavo.fitness.services.UserService;
@@ -12,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
 
@@ -21,5 +23,14 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<UserResponse> register(@RequestBody RegisterRequest registerRequest) {
         return new ResponseEntity<>(userService.register(registerRequest), HttpStatus.CREATED);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
+        LoginResponse loginResponse = userService.login(loginRequest);
+        if(loginResponse == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        return new ResponseEntity<>(loginResponse, HttpStatus.OK);
     }
 }
