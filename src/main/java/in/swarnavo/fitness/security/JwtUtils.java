@@ -29,7 +29,6 @@ public class JwtUtils {
     @Value("${jwt.expiration.ms}")
     private int jwtExpirationMs;
 
-    // Extracts JWT token from the Authorization header of the HTTP request
     public String getJwtFromHeader(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if(bearerToken != null && bearerToken.startsWith("Bearer ")) {
@@ -38,7 +37,6 @@ public class JwtUtils {
         return null;
     }
 
-    // Generates a JWT token from UserDetails object
     public String generateToken (String userId, String role) {
         return Jwts.builder()
                 .subject(userId)
@@ -49,7 +47,6 @@ public class JwtUtils {
                 .compact();
     }
 
-    // Validates the JWT token by checking signature and expiration
     public boolean validateJwtToken(String jwtToken) {
         try {
             Jwts.parser()
@@ -71,17 +68,16 @@ public class JwtUtils {
         return false;
     }
 
-    // Creates a cryptographic key from the secret string for signing/verifying JWT
     private SecretKey key() {
         return Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
     }
 
-    // Extracts username (subject) from the JWT token
-    public String getUsernameFromToken(String jwt) {
-        return getAllClaims(jwt).getSubject();
+    public String getUserId(String jwt) {
+        return Jwts.parser().verifyWith((SecretKey) key())
+                .build().parseSignedClaims(jwt)
+                .getPayload().getSubject();
     }
 
-    // Extracts all claims from the JWT token
     public Claims getAllClaims(String jwt) {
         return Jwts.parser()
                 .verifyWith(key())

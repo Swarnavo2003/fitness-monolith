@@ -7,6 +7,8 @@ import in.swarnavo.fitness.models.User;
 import in.swarnavo.fitness.repositories.ActivityRepository;
 import in.swarnavo.fitness.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,8 +23,10 @@ public class ActivityServiceImpl implements ActivityService {
 
     @Override
     public ActivityResponse trackActivity(ActivityRequest request) {
-        User user = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new RuntimeException("Invalid User: " + request.getUserId()));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = authentication.getPrincipal().toString();
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Invalid User: " + userId));
         Activity activity = Activity.builder()
                 .user(user)
                 .type(request.getType())
@@ -37,7 +41,9 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
-    public List<ActivityResponse> getUserActivities(String userId) {
+    public List<ActivityResponse> getUserActivities() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = authentication.getPrincipal().toString();
         List<Activity> activityList = activityRepository.findByUserId(userId);
         return activityList.stream()
                 .map(activity -> mapToResponse(activity))
