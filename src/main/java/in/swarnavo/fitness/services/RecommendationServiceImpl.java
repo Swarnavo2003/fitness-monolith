@@ -11,6 +11,8 @@ import in.swarnavo.fitness.repositories.ActivityRepository;
 import in.swarnavo.fitness.repositories.RecommendationRepository;
 import in.swarnavo.fitness.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,8 +29,11 @@ public class RecommendationServiceImpl implements RecommendationService {
 
     @Override
     public RecommendationResponse generateRecommendation(RecommendationRequest request) {
-        User user = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new RuntimeException("User Not Found : " + request.getUserId() ));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = authentication.getPrincipal().toString();
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User Not Found : " + userId ));
 
         Activity activity = activityRepository.findById(request.getActivityId())
                 .orElseThrow(() -> new RuntimeException("Activity Not Found : " + request.getActivityId() ));
@@ -81,7 +86,10 @@ public class RecommendationServiceImpl implements RecommendationService {
     }
 
     @Override
-    public List<RecommendationResponse> getUserRecommendations(String userId) {
+    public List<RecommendationResponse> getUserRecommendations() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = authentication.getPrincipal().toString();
+
         List<Recommendation> recommendations = recommendationRepository.findByUserId(userId);
         return recommendations
                 .stream()

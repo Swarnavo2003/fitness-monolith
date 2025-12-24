@@ -8,7 +8,7 @@ import java.util.List;
 public interface RecommendationService {
     RecommendationResponse generateRecommendation(RecommendationRequest request);
 
-    List<RecommendationResponse> getUserRecommendations(String userId);
+    List<RecommendationResponse> getUserRecommendations();
 
     List<RecommendationResponse> getActivityRecommendations(String activityId);
 }
