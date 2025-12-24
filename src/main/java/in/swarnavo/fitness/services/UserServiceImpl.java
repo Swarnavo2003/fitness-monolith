@@ -40,10 +40,12 @@ public class UserServiceImpl implements UserService {
     public LoginResponse login(LoginRequest loginRequest) {
         try {
             User user = userRepository.findByEmail(loginRequest.getEmail());
-            if(user == null) return null;
+            if(user == null) {
+                throw new RuntimeException("Invalid Credentials");
+            }
 
             if(!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-                return null;
+                throw new RuntimeException("Invalid Credentials");
             }
 
             String token = jwtUtils.generateToken(user.getId(), user.getRole().name());
@@ -51,7 +53,7 @@ public class UserServiceImpl implements UserService {
             return new LoginResponse(token, mapToResponse(user));
         } catch (AuthenticationException e) {
             e.printStackTrace();
-            return null;
+            throw new RuntimeException("Authentication Error");
         }
     }
 
