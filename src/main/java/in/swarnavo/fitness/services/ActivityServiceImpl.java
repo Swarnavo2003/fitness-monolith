@@ -50,6 +50,14 @@ public class ActivityServiceImpl implements ActivityService {
                 .toList();
     }
 
+    @Override
+    public List<ActivityResponse> getAllActivities() {
+        List<Activity> activities = activityRepository.findAll();
+        return activities.stream()
+                .map(activity -> mapToResponse(activity))
+                .toList();
+    }
+
     private ActivityResponse mapToResponse(Activity activity) {
         return ActivityResponse.builder()
                 .id(activity.getId())

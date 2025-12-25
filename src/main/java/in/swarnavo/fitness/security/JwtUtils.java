@@ -40,7 +40,7 @@ public class JwtUtils {
     public String generateToken (String userId, String role) {
         return Jwts.builder()
                 .subject(userId)
-                .claim("roles", List.of(role))
+                .claim("roles", List.of("ROLE_" + role))
                 .issuedAt(new Date())
                 .expiration(new Date(new Date().getTime() + jwtExpirationMs))
                 .signWith(key())
